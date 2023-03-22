@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="text-align:center;">
+<h1 style="margin-top:5%;color:antiquewhite">LOGIN YOUR ACCOUNT!!</h1>
+
+<form action="{% url 'user_login' %}" method="post">
+    {% csrf_token %}
+    {% if error_message  %}
+        <div style="color:rgb(255, 0, 0); background-color:rgb(211, 151, 151); margin-left: 30rem ; width:150px">
+        {{error_message}}
+        </div>
+        {% endif %}
+   <h3 style="color:antiquewhite">User Name:</h3>
+    <input type="text" value="{{vals.username}}" name="uname" style="border:none; border-radius:3px; padding:3px 0px 3px 6px; width:15rem; margin-top:-10px;" placeholder="Enter Username"><br><br>
+   <h3 style="margin-top:-10px;color:antiquewhite">Password:</h3>
+   <input type="password" name="pwd" style="border:none; border-radius:3px; padding:3px 0px 3px 6px; width:15rem; margin-top:-10px" placeholder="Enter Password"><br><br>
+  
+    <button type="submit" style="border:none; box-shadow:3px 3px 0 0 grey; border-radius:3px; padding:3px 0px 3px 6px; width:5rem; margin-top:-10px; margin-left: 0rem;background-color:antiquewhite;" > LOG IN </button>
+    </form>
+</div>
+
+{% endblock %}

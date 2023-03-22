@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="heading">Employee Information</h1>
+<div class="container_1">
+<h2 class="h">Search Data</h2>
+<!-- <form action="sea" method="post">
+    {% csrf_token %}  -->
+<input type="text" class="search" list="names"  id="searchIn" name="fname" placeholder="Search by name">
+
+<datalist id="names">
+    {% for d in data_1%}
+    <option value={{d.Emp_name}}>
+    {% endfor %}
+</datalist>
+
+<!-- <button  type="submit">Search By Name</button> -->
+<button class="btn" onclick="searchdata()">Search</button> 
+<button class="btn" onclick="tableToCSV()">Export</button><br><br>
+<!-- </form> -->
+<form action = "filt" method="post">
+    {% csrf_token %} 
+<b style="color: antiquewhite;">From: </b><input type="date" id='From' name="fromdate"/>
+
+<b style="color: antiquewhite;">To: </b><input type="date" id='to' name="to"/>
+
+<!-- <input type="button" name='range' id="range" value='Search By Date' class="btn-btn-success" /> -->
+<button class="btn" type="submit">Search By Date</button>
+
+
+</form>
+<br><br>
+<table id="myTable">
+    <thead>
+        <tr>
+            <th>Employee Id</th>
+            <th>First Name</th>
+            <th>Date</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+        </tr>
+    </thead>
+    {% for d in data_1 %}
+    <tbody>
+        <tr>
+            <td>{{ d.Emp_id }}</td>
+            <td>{{ d.Emp_name }}</td>
+            <td>{{ d.date|date:'y-m-d'}}</td>
+            <td>{{ d.check_in}}</td>
+            <td>{{ d.check_out}}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+</div>
+<script>
+function tableToCSV() {
+    // Variable to store the final csv data
+    var csv_data = [];
+    // Get each row data
+    var rows = document.getElementsByTagName('tr');
+    for (var i = 0; i < rows.length; i++) {
+        // Get each column data
+        var cols = rows[i].querySelectorAll('td,th');
+        // Stores each csv row data
+        var csvrow = [];
+        for (var j = 0; j < cols.length; j++) {
+            // Get the text data of each cell
+            // of a row and push it to csvrow
+            csvrow.push(cols[j].innerHTML);
+        }
+        // Combine each column value with comma
+        csv_data.push(csvrow.join(","));
+    }
+    // Combine each row data with new line character
+    csv_data = csv_data.join('\n');
+    // Call this function to download csv file
+    downloadCSVFile(csv_data);
+}
+function downloadCSVFile(csv_data) {
+    // Create CSV file object and feed
+    // our csv_data into it
+    CSVFile = new Blob([csv_data], {
+        type: "text/csv"
+    });
+    // Create to temporary link to initiate
+    // download process
+    var temp_link = document.createElement('a');
+    // Download csv file
+    temp_link.download = "data.csv";
+    var url = window.URL.createObjectURL(CSVFile);
+    temp_link.href = url;
+    // This link should not be displayed
+    temp_link.style.display = "none";
+    document.body.appendChild(temp_link);
+    // Automatically click the link to
+    // trigger download
+    temp_link.click();
+    document.body.removeChild(temp_link);
+}
+</script>
+{% endblock %}
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script> -->
+<!-- <script>
+    $(document).ready(function(){
+        $.datepicker.setDefaults({
+            dateformat:"YYYY-MM-DD"
+        });
+    $( function() {
+        $( "#From" ).datepicker();
+        $( "#to" ).datepicker();
+      }); 
+    
+})
+$(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'csvHtml5',
+            'copyHtml5'
+        ]
+    } );
+} ); -->
+<!-- </script> -->
+
+
+
+<!-- $('#range').click(function(){
+    var from = $('#From').val();
+    var to = $('#to').val();
+    if(from != '' && to != ''){
+        $.ajax({
+            url:"/range",
+            method:"POST",
+            data:{from:from,to:to},
+            success:function(data){
+                $('myTable').html(data)
+            }
+        })
+    }
+}); -->
+<!-- 
+$('#range').click(function(){
+    var from = $('#From').val();
+    var to = $('#to').val();
+    if(from != '' && to != ''){
+        $.ajax({
+            url:'/range',
+            method:"POST",
+            data:{from:from,to:to},
+            success:function(data)
+            {
+                $('myTable').html(data)
+                $('myTable').append(data.htmlresponse);
+            }
+        });
+    }
+    else{
+        alert("Please Select the Date");
+    }
+}); -->
